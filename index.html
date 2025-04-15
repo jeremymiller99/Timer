@@ -702,6 +702,28 @@
                 min-width: 120px;
             }
         }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 <body>
@@ -788,8 +810,39 @@
             <div id="analyticsTab" style="display: none;">
                 <h2 class="history-title">Activity Analytics</h2>
                 <div class="analytics-grid">
+                    <div class="stats-overview">
+                        <div class="stat-card">
+                            <div class="stat-value" id="avgSessionDuration">0:00:00</div>
+                            <div class="stat-label">Average Session Duration</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="bestDay">-</div>
+                            <div class="stat-label">Most Productive Day</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalSessions">0</div>
+                            <div class="stat-label">Total Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="longestStreak">0</div>
+                            <div class="stat-label">Longest Streak (days)</div>
+                        </div>
+                    </div>
                     <div class="chart-container">
+                        <h3 class="chart-title">Activity Distribution by Tag</h3>
                         <canvas id="activityChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Daily Activity Distribution</h3>
+                        <canvas id="dailyDistributionChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Productivity Trend (Last 30 Days)</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Session Duration Distribution</h3>
+                        <canvas id="durationChart"></canvas>
                     </div>
                     <div class="heatmap-container">
                         <h3 class="heatmap-title">Activity Heatmap</h3>
@@ -832,6 +885,12 @@
         let currentSessionStart = null;
         let currentTag = '';
 
+        // Chart instances
+        let activityChart = null;
+        let dailyDistributionChart = null;
+        let trendChart = null;
+        let durationChart = null;
+
         const display = document.getElementById('display');
         const totalDisplay = document.getElementById('totalDisplay');
         const startBtn = document.getElementById('startBtn');
@@ -842,7 +901,6 @@
         const tabs = document.querySelectorAll('.tab');
         const sessionsTab = document.getElementById('sessionsTab');
         const analyticsTab = document.getElementById('analyticsTab');
-        let activityChart = null;
 
         // Gamification variables
         let currentLevel = 1;
@@ -1148,23 +1206,121 @@
         function updateAnalytics() {
             const sessions = loadSessions();
             const tagData = {};
+            const dailyData = {};
+            const trendData = {};
+            const durationData = {
+                '0-15m': 0,
+                '15-30m': 0,
+                '30-60m': 0,
+                '1-2h': 0,
+                '2h+': 0
+            };
             
+            let totalDuration = 0;
+            let totalSessions = sessions.length;
+            let longestStreak = 0;
+            let currentStreak = 0;
+            let lastDate = null;
+            let bestDay = { date: null, duration: 0 };
+
+            // Process sessions data
             sessions.forEach(session => {
-                const duration = session.hours * 3600 + session.minutes * 60 + session.seconds;
+                const duration = (session.hours * 3600) + (session.minutes * 60) + session.seconds;
+                totalDuration += duration;
+
+                // Tag distribution
                 if (!tagData[session.tag]) {
                     tagData[session.tag] = 0;
                 }
                 tagData[session.tag] += duration;
+
+                // Daily distribution
+                const date = new Date(session.start);
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                if (!dailyData[dayOfWeek]) {
+                    dailyData[dayOfWeek] = 0;
+                }
+                dailyData[dayOfWeek] += duration;
+
+                // Trend data (last 30 days)
+                const today = new Date();
+                const thirtyDaysAgo = new Date(today);
+                thirtyDaysAgo.setDate(today.getDate() - 30);
+                if (date >= thirtyDaysAgo) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    if (!trendData[dateStr]) {
+                        trendData[dateStr] = 0;
+                    }
+                    trendData[dateStr] += duration;
+                }
+
+                // Duration distribution
+                const minutes = duration / 60;
+                if (minutes <= 15) durationData['0-15m']++;
+                else if (minutes <= 30) durationData['15-30m']++;
+                else if (minutes <= 60) durationData['30-60m']++;
+                else if (minutes <= 120) durationData['1-2h']++;
+                else durationData['2h+']++;
+
+                // Best day calculation
+                const dayStr = date.toISOString().split('T')[0];
+                if (!bestDay.date || duration > bestDay.duration) {
+                    bestDay = { date: dayStr, duration };
+                }
+
+                // Streak calculation
+                const sessionDate = new Date(date);
+                sessionDate.setHours(0, 0, 0, 0);
+                
+                if (!lastDate) {
+                    currentStreak = 1;
+                } else {
+                    const diffTime = sessionDate - lastDate;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 1) {
+                        currentStreak++;
+                    } else if (diffDays > 1) {
+                        currentStreak = 1;
+                    }
+                }
+                
+                if (currentStreak > longestStreak) {
+                    longestStreak = currentStreak;
+                }
+                
+                lastDate = sessionDate;
             });
 
-            const labels = Object.keys(tagData);
-            const data = labels.map(tag => tagData[tag] / 3600); // Convert to hours
+            // Update statistics
+            const avgSessionSeconds = totalSessions > 0 ? Math.floor(totalDuration / totalSessions) : 0;
+            const avgSessionHours = Math.floor(avgSessionSeconds / 3600);
+            const avgSessionMinutes = Math.floor((avgSessionSeconds % 3600) / 60);
+            
+            document.getElementById('avgSessionDuration').textContent = 
+                formatTime(avgSessionHours, avgSessionMinutes, 0);
+            document.getElementById('bestDay').textContent = 
+                bestDay.date ? new Date(bestDay.date).toLocaleDateString() : '-';
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('longestStreak').textContent = longestStreak;
 
+            // Update charts
+            updateActivityChart(tagData);
+            updateDailyDistributionChart(dailyData);
+            updateTrendChart(trendData);
+            updateDurationChart(durationData);
+            updateHeatmap();
+        }
+
+        function updateActivityChart(tagData) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
             if (activityChart) {
                 activityChart.destroy();
             }
 
-            const ctx = document.getElementById('activityChart').getContext('2d');
+            const labels = Object.keys(tagData);
+            const data = labels.map(tag => tagData[tag] / 3600); // Convert to hours
+
             activityChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1190,8 +1346,117 @@
                     }
                 }
             });
+        }
 
-            updateHeatmap();
+        function updateDailyDistributionChart(dailyData) {
+            const ctx = document.getElementById('dailyDistributionChart').getContext('2d');
+            if (dailyDistributionChart) {
+                dailyDistributionChart.destroy();
+            }
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const data = days.map(day => (dailyData[day] || 0) / 3600); // Convert to hours
+
+            dailyDistributionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Hours Spent',
+                        data: data,
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTrendChart(trendData) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            const dates = Object.keys(trendData).sort();
+            const data = dates.map(date => trendData[date] / 3600); // Convert to hours
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.map(date => new Date(date).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Daily Hours',
+                        data: data,
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDurationChart(durationData) {
+            const ctx = document.getElementById('durationChart').getContext('2d');
+            if (durationChart) {
+                durationChart.destroy();
+            }
+
+            const labels = Object.keys(durationData);
+            const data = Object.values(durationData);
+
+            durationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(249, 115, 22, 0.2)',
+                            'rgba(249, 115, 22, 0.4)',
+                            'rgba(249, 115, 22, 0.6)',
+                            'rgba(249, 115, 22, 0.8)',
+                            'rgba(249, 115, 22, 1)'
+                        ],
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
         }
 
         function updateHeatmap() {
