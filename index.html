@@ -57,6 +57,11 @@
             width: 100%;
             max-width: 1200px;
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin: 0 auto;
         }
 
         .timer-container {
@@ -65,10 +70,10 @@
             border-radius: 1rem;
             box-shadow: var(--shadow-lg);
             text-align: center;
-            margin-bottom: 2rem;
             width: 100%;
             max-width: 600px;
             border: 1px solid var(--border-color);
+            margin: 0 auto;
         }
 
         .timer-display {
@@ -161,7 +166,9 @@
             border-radius: 1rem;
             box-shadow: var(--shadow-lg);
             width: 100%;
+            max-width: 1000px;
             border: 1px solid var(--border-color);
+            margin: 0 auto;
         }
 
         .history-title {
@@ -404,8 +411,9 @@
             border-radius: 1rem;
             box-shadow: var(--shadow-lg);
             width: 100%;
+            max-width: 1000px;
             border: 1px solid var(--border-color);
-            margin-bottom: 2rem;
+            margin: 0 auto;
         }
 
         .stats-grid {
@@ -1510,110 +1518,22 @@
                 level: 1,
                 title: "Novice Adventurer",
                 description: "Just starting your journey",
-                idle: "👶",
-                active: "👶",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 2,
-                title: "Curious Explorer",
-                description: "Taking first steps",
-                idle: "🧒",
-                active: "🧒",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 3,
-                title: "Apprentice Learner",
-                description: "Growing in knowledge",
-                idle: "🧑‍🎓",
-                active: "🧑‍🎓",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 4,
-                title: "Skillful Student",
-                description: "Mastering the basics",
-                idle: "🧑‍💻",
-                active: "🧑‍💻",
+                idle: "🧙‍♂️",
+                active: "🧙‍♂️",
                 idleAnimation: "character-idle"
             },
             {
                 level: 5,
-                title: "Dedicated Scholar",
-                description: "Building expertise",
-                idle: "📚",
-                active: "📚",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 6,
-                title: "Knowledge Seeker",
-                description: "Expanding horizons",
-                idle: "🔍",
-                active: "🔍",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 7,
-                title: "Wisdom Keeper",
-                description: "Gaining insight",
-                idle: "🧙‍♀️",
-                active: "🧙‍♀️",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 8,
-                title: "Master of Arts",
-                description: "Creative expression",
-                idle: "🎨",
-                active: "🎨",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 9,
-                title: "Strategic Thinker",
-                description: "Planning ahead",
-                idle: "🧠",
-                active: "🧠",
+                title: "Mystic Apprentice",
+                description: "Learning the arcane arts",
+                idle: "🔮",
+                active: "🔮",
                 idleAnimation: "character-idle"
             },
             {
                 level: 10,
-                title: "Seasoned Warrior",
-                description: "Battle-hardened",
-                idle: "⚔️",
-                active: "⚔️",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 11,
-                title: "Mystic Sage",
-                description: "Ancient wisdom",
-                idle: "🧙",
-                active: "🧙",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 12,
-                title: "Time Guardian",
-                description: "Master of moments",
-                idle: "⏳",
-                active: "⏳",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 13,
-                title: "Cosmic Explorer",
-                description: "Reaching for stars",
-                idle: "🚀",
-                active: "🚀",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 14,
                 title: "Elemental Master",
-                description: "Harnessing power",
+                description: "Commanding the forces of nature",
                 idle: "🌪️",
                 active: "🌪️",
                 idleAnimation: "character-idle"
@@ -1621,65 +1541,145 @@
             {
                 level: 15,
                 title: "Dragon Rider",
-                description: "Soaring high",
+                description: "Soaring through the skies",
                 idle: "🐉",
                 active: "🐉",
                 idleAnimation: "character-idle"
             },
             {
-                level: 16,
-                title: "Celestial Being",
-                description: "Transcendent power",
+                level: 20,
+                title: "Celestial Guardian",
+                description: "Wielding cosmic power",
                 idle: "✨",
                 active: "✨",
                 idleAnimation: "character-idle"
             },
             {
-                level: 17,
-                title: "Ancient Guardian",
-                description: "Timeless wisdom",
-                idle: "🏛️",
-                active: "🏛️",
+                level: 25,
+                title: "Time Bender",
+                description: "Mastering the flow of time",
+                idle: "⏳",
+                active: "⏳",
                 idleAnimation: "character-idle"
             },
             {
-                level: 18,
+                level: 30,
+                title: "Cosmic Explorer",
+                description: "Journeying through dimensions",
+                idle: "🚀",
+                active: "🚀",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 35,
+                title: "Ancient Sage",
+                description: "Holding ancient wisdom",
+                idle: "📜",
+                active: "📜",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 40,
                 title: "Mythical Hero",
-                description: "Legendary status",
+                description: "Legendary status achieved",
                 idle: "🦸",
                 active: "🦸",
                 idleAnimation: "character-idle"
             },
             {
-                level: 19,
-                title: "Eternal Sage",
-                description: "Infinite knowledge",
-                idle: "🧘",
-                active: "🧘",
-                idleAnimation: "character-idle"
-            },
-            {
-                level: 20,
+                level: 45,
                 title: "Dungeon Master",
-                description: "Ruler of realms",
+                description: "Ruler of all realms",
                 idle: "👑",
                 active: "👑",
                 idleAnimation: "character-idle"
             },
             {
-                level: 21,
+                level: 50,
                 title: "Cosmic Guardian",
-                description: "Universal power",
+                description: "Universal power at your command",
                 idle: "🌌",
                 active: "🌌",
                 idleAnimation: "character-idle"
             },
             {
-                level: 22,
+                level: 55,
                 title: "Time Lord",
                 description: "Master of all time",
                 idle: "⏰",
                 active: "⏰",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 60,
+                title: "Phoenix Knight",
+                description: "Reborn in eternal flame",
+                idle: "🔥",
+                active: "🔥",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 65,
+                title: "Storm Bringer",
+                description: "Commanding the tempest",
+                idle: "⚡",
+                active: "⚡",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 70,
+                title: "Void Walker",
+                description: "Traversing the abyss",
+                idle: "🌑",
+                active: "🌑",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 75,
+                title: "Star Forger",
+                description: "Creating celestial bodies",
+                idle: "⭐",
+                active: "⭐",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 80,
+                title: "Reality Weaver",
+                description: "Shaping existence itself",
+                idle: "🌀",
+                active: "🌀",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 85,
+                title: "Eternal Champion",
+                description: "Beyond mortal limits",
+                idle: "⚔️",
+                active: "⚔️",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 90,
+                title: "Omnipotent Being",
+                description: "All-powerful existence",
+                idle: "💫",
+                active: "💫",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 95,
+                title: "Cosmic Architect",
+                description: "Designing universes",
+                idle: "🌠",
+                active: "🌠",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 100,
+                title: "Supreme Deity",
+                description: "The ultimate power",
+                idle: "👁️",
+                active: "👁️",
                 idleAnimation: "character-idle"
             }
         ];
@@ -2744,16 +2744,36 @@
         // Add this function after other functions
         function updateAvatarSelection() {
             const currentState = characterStates.find(state => state.level <= currentLevel);
-            if (currentState) {
-                selectedCharacter.textContent = currentState.idle;
-                selectedCharacterTitle.textContent = currentState.title;
-                selectedCharacterDescription.textContent = currentState.description;
+            const savedAvatar = localStorage.getItem('selectedAvatar');
+            let selectedState = currentState;
+
+            if (savedAvatar) {
+                const savedState = characterStates.find(state => state.level === parseInt(savedAvatar));
+                if (savedState && currentLevel >= savedState.level) {
+                    selectedState = savedState;
+                }
+            }
+
+            if (selectedState) {
+                selectedCharacter.textContent = selectedState.idle;
+                selectedCharacterTitle.textContent = selectedState.title;
+                selectedCharacterDescription.textContent = selectedState.description;
+                
+                // Update main character display
+                const mainCharacter = document.getElementById('character');
+                const mainCharacterTitle = document.getElementById('characterTitle');
+                const mainCharacterDescription = document.getElementById('characterDescription');
+                
+                mainCharacter.textContent = isRunning ? selectedState.active : selectedState.idle;
+                mainCharacter.className = `character ${isRunning ? 'character-active' : selectedState.idleAnimation}`;
+                mainCharacterTitle.textContent = selectedState.title;
+                mainCharacterDescription.textContent = `${selectedState.description} (Level ${currentLevel})`;
             }
 
             // Update avatar list
             avatarList.innerHTML = characterStates.map(state => {
                 const isUnlocked = currentLevel >= state.level;
-                const isSelected = currentState && state.level === currentState.level;
+                const isSelected = selectedState && state.level === selectedState.level;
                 
                 return `
                     <div class="avatar-item ${isUnlocked ? '' : 'locked'} ${isSelected ? 'selected' : ''}" 
@@ -2772,9 +2792,22 @@
             const state = characterStates.find(s => s.level === level);
             
             if (state) {
+                // Save selected avatar
+                localStorage.setItem('selectedAvatar', level.toString());
+                
                 selectedCharacter.textContent = state.idle;
                 selectedCharacterTitle.textContent = state.title;
                 selectedCharacterDescription.textContent = state.description;
+                
+                // Update main character display
+                const mainCharacter = document.getElementById('character');
+                const mainCharacterTitle = document.getElementById('characterTitle');
+                const mainCharacterDescription = document.getElementById('characterDescription');
+                
+                mainCharacter.textContent = isRunning ? state.active : state.idle;
+                mainCharacter.className = `character ${isRunning ? 'character-active' : state.idleAnimation}`;
+                mainCharacterTitle.textContent = state.title;
+                mainCharacterDescription.textContent = `${state.description} (Level ${currentLevel})`;
                 
                 // Update selected state in the list
                 document.querySelectorAll('.avatar-item').forEach(item => {
