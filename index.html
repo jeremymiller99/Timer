@@ -1030,6 +1030,136 @@
                 progress: 0,
                 maxProgress: 1,
                 xpReward: 200
+            },
+            {
+                id: 'morning_person',
+                title: 'Morning Person',
+                description: 'Complete 10 sessions before 9 AM',
+                icon: '☀️',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 10,
+                xpReward: 500
+            },
+            {
+                id: 'afternoon_delight',
+                title: 'Afternoon Delight',
+                description: 'Complete 10 sessions between 12 PM and 5 PM',
+                icon: '🌤️',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 10,
+                xpReward: 500
+            },
+            {
+                id: 'evening_explorer',
+                title: 'Evening Explorer',
+                description: 'Complete 10 sessions between 6 PM and 11 PM',
+                icon: '🌆',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 10,
+                xpReward: 500
+            },
+            {
+                id: 'activity_master',
+                title: 'Activity Master',
+                description: 'Track 10 different types of activities',
+                icon: '🎨',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 10,
+                xpReward: 1000
+            },
+            {
+                id: 'consistency_king',
+                title: 'Consistency King',
+                description: 'Maintain a streak for 3 consecutive weeks',
+                icon: '👑',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 21,
+                xpReward: 1500
+            },
+            {
+                id: 'weekday_warrior',
+                title: 'Weekday Warrior',
+                description: 'Track activity on all 5 weekdays',
+                icon: '💼',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 5,
+                xpReward: 600
+            },
+            {
+                id: 'balanced_life',
+                title: 'Balanced Life',
+                description: 'Track activity on both weekdays and weekends',
+                icon: '⚖️',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 1,
+                xpReward: 400
+            },
+            {
+                id: 'quick_starter',
+                title: 'Quick Starter',
+                description: 'Complete 5 sessions under 15 minutes',
+                icon: '⚡',
+                tier: 'bronze',
+                progress: 0,
+                maxProgress: 5,
+                xpReward: 300
+            },
+            {
+                id: 'endurance_master',
+                title: 'Endurance Master',
+                description: 'Complete 5 sessions over 2 hours',
+                icon: '🏋️',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 5,
+                xpReward: 1200
+            },
+            {
+                id: 'activity_architect',
+                title: 'Activity Architect',
+                description: 'Create 20 different activity tags',
+                icon: '🏗️',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 20,
+                xpReward: 1500
+            },
+            {
+                id: 'task_master',
+                title: 'Task Master',
+                icon: '✅',
+                description: 'Complete 50 tasks during sessions',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 50,
+                xpReward: 800
+            },
+            {
+                id: 'productivity_ninja',
+                title: 'Productivity Ninja',
+                description: 'Complete 3 sessions in a single day',
+                icon: '🥷',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 1,
+                xpReward: 600
+            },
+            {
+                id: 'time_traveler',
+                title: 'Time Traveler',
+                description: 'Track activity in all 4 quarters of the day',
+                icon: '⏳',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 1,
+                xpReward: 1000
             }
         ];
 
@@ -1354,30 +1484,99 @@
                 dailyDistributionChart.destroy();
             }
 
+            const sessions = loadSessions();
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const data = days.map(day => (dailyData[day] || 0) / 3600); // Convert to hours
+            
+            // Create a map to store activity by day and tag
+            const activityByDayAndTag = new Map();
+            const uniqueTags = new Set();
+            
+            // Initialize the map structure
+            days.forEach(day => {
+                activityByDayAndTag.set(day, new Map());
+            });
+
+            // Process sessions data
+            sessions.forEach(session => {
+                const date = new Date(session.start);
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const tag = session.tag;
+                const duration = (session.hours * 3600) + (session.minutes * 60) + session.seconds;
+                
+                uniqueTags.add(tag);
+                const dayData = activityByDayAndTag.get(dayOfWeek);
+                dayData.set(tag, (dayData.get(tag) || 0) + duration);
+            });
+
+            // Generate colors for each tag
+            const colors = [
+                'rgba(249, 115, 22, 0.8)',   // Orange
+                'rgba(22, 163, 74, 0.8)',    // Green
+                'rgba(59, 130, 246, 0.8)',   // Blue
+                'rgba(168, 85, 247, 0.8)',   // Purple
+                'rgba(239, 68, 68, 0.8)',    // Red
+                'rgba(234, 179, 8, 0.8)',    // Yellow
+                'rgba(6, 182, 212, 0.8)',    // Cyan
+                'rgba(244, 114, 182, 0.8)',  // Pink
+                'rgba(120, 113, 108, 0.8)',  // Gray
+                'rgba(34, 197, 94, 0.8)'     // Emerald
+            ];
+
+            // Create datasets for each tag
+            const datasets = Array.from(uniqueTags).map((tag, index) => {
+                const color = colors[index % colors.length];
+                return {
+                    label: tag,
+                    data: days.map(day => {
+                        const dayData = activityByDayAndTag.get(day);
+                        const duration = dayData.get(tag) || 0;
+                        return duration / 3600; // Convert to hours
+                    }),
+                    borderColor: color,
+                    backgroundColor: color,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    tension: 0.4,
+                    fill: false
+                };
+            });
 
             dailyDistributionChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: days,
-                    datasets: [{
-                        label: 'Hours Spent',
-                        data: data,
-                        borderColor: 'rgba(249, 115, 22, 1)',
-                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
                                 text: 'Hours'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} hours`;
+                                }
                             }
                         }
                     }
@@ -1912,9 +2111,11 @@
 
         // Update achievements
         function updateAchievements() {
+            const sessions = loadSessions();
+            
             // First session achievement
             const firstSessionAchievement = achievements.find(a => a.id === 'first_session');
-            if (firstSessionAchievement && loadSessions().length > 0) {
+            if (firstSessionAchievement && sessions.length > 0) {
                 firstSessionAchievement.progress = 1;
             }
 
@@ -1933,6 +2134,130 @@
             if (total10HoursAchievement) total10HoursAchievement.progress = Math.min(totalMinutes, 600);
             if (total50HoursAchievement) total50HoursAchievement.progress = Math.min(totalMinutes, 3000);
             if (total100HoursAchievement) total100HoursAchievement.progress = Math.min(totalMinutes, 6000);
+
+            // Time-based achievements
+            const morningPerson = achievements.find(a => a.id === 'morning_person');
+            const afternoonDelight = achievements.find(a => a.id === 'afternoon_delight');
+            const eveningExplorer = achievements.find(a => a.id === 'evening_explorer');
+            const timeTraveler = achievements.find(a => a.id === 'time_traveler');
+
+            let morningSessions = 0;
+            let afternoonSessions = 0;
+            let eveningSessions = 0;
+            let hasEarlyMorning = false;
+            let hasLateMorning = false;
+            let hasEarlyAfternoon = false;
+            let hasLateAfternoon = false;
+
+            sessions.forEach(session => {
+                const hour = new Date(session.start).getHours();
+                
+                // Morning sessions (before 9 AM)
+                if (hour < 9) {
+                    morningSessions++;
+                    hasEarlyMorning = true;
+                }
+                // Late morning (9 AM - 12 PM)
+                else if (hour < 12) {
+                    hasLateMorning = true;
+                }
+                // Early afternoon (12 PM - 3 PM)
+                else if (hour < 15) {
+                    afternoonSessions++;
+                    hasEarlyAfternoon = true;
+                }
+                // Late afternoon (3 PM - 5 PM)
+                else if (hour < 17) {
+                    afternoonSessions++;
+                    hasLateAfternoon = true;
+                }
+                // Evening (6 PM - 11 PM)
+                else if (hour >= 18 && hour < 23) {
+                    eveningSessions++;
+                }
+            });
+
+            if (morningPerson) morningPerson.progress = Math.min(morningSessions, 10);
+            if (afternoonDelight) afternoonDelight.progress = Math.min(afternoonSessions, 10);
+            if (eveningExplorer) eveningExplorer.progress = Math.min(eveningSessions, 10);
+            if (timeTraveler) timeTraveler.progress = hasEarlyMorning && hasLateMorning && hasEarlyAfternoon && hasLateAfternoon ? 1 : 0;
+
+            // Activity variety achievements
+            const uniqueTags = new Set(sessions.map(session => session.tag));
+            const activityMaster = achievements.find(a => a.id === 'activity_master');
+            const activityArchitect = achievements.find(a => a.id === 'activity_architect');
+            
+            if (activityMaster) activityMaster.progress = Math.min(uniqueTags.size, 10);
+            if (activityArchitect) activityArchitect.progress = Math.min(uniqueTags.size, 20);
+
+            // Session duration achievements
+            const quickStarter = achievements.find(a => a.id === 'quick_starter');
+            const enduranceMaster = achievements.find(a => a.id === 'endurance_master');
+            
+            let quickSessions = 0;
+            let longSessions = 0;
+            
+            sessions.forEach(session => {
+                const duration = session.hours * 60 + session.minutes;
+                if (duration <= 15) quickSessions++;
+                if (duration >= 120) longSessions++;
+            });
+
+            if (quickStarter) quickStarter.progress = Math.min(quickSessions, 5);
+            if (enduranceMaster) enduranceMaster.progress = Math.min(longSessions, 5);
+
+            // Task completion achievement
+            const taskMaster = achievements.find(a => a.id === 'task_master');
+            let completedTasks = 0;
+            
+            sessions.forEach(session => {
+                if (session.completedTasks) {
+                    completedTasks += session.completedTasks.length;
+                }
+            });
+
+            if (taskMaster) taskMaster.progress = Math.min(completedTasks, 50);
+
+            // Daily activity achievements
+            const weekdayWarrior = achievements.find(a => a.id === 'weekday_warrior');
+            const balancedLife = achievements.find(a => a.id === 'balanced_life');
+            const productivityNinja = achievements.find(a => a.id === 'productivity_ninja');
+            
+            let weekdayCount = 0;
+            let hasWeekend = false;
+            let hasWeekday = false;
+            let maxSessionsPerDay = 0;
+            const sessionsByDay = new Map();
+            
+            sessions.forEach(session => {
+                const date = new Date(session.start);
+                const dayOfWeek = date.getDay();
+                const dateStr = date.toDateString();
+                
+                // Count sessions per day
+                sessionsByDay.set(dateStr, (sessionsByDay.get(dateStr) || 0) + 1);
+                
+                // Track weekday/weekend activity
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    hasWeekday = true;
+                    weekdayCount++;
+                } else {
+                    hasWeekend = true;
+                }
+            });
+
+            // Find maximum sessions in a single day
+            sessionsByDay.forEach(count => {
+                maxSessionsPerDay = Math.max(maxSessionsPerDay, count);
+            });
+
+            if (weekdayWarrior) weekdayWarrior.progress = Math.min(weekdayCount, 5);
+            if (balancedLife) balancedLife.progress = hasWeekday && hasWeekend ? 1 : 0;
+            if (productivityNinja) productivityNinja.progress = maxSessionsPerDay >= 3 ? 1 : 0;
+
+            // Consistency achievement
+            const consistencyKing = achievements.find(a => a.id === 'consistency_king');
+            if (consistencyKing) consistencyKing.progress = Math.min(currentStreak, 21);
         }
 
         // Update character
