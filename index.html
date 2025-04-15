@@ -611,14 +611,18 @@
             overflow: hidden;
             border: 3px solid var(--primary-color);
             box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .character {
             width: 100%;
             height: 100%;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
             transition: all 0.3s ease;
         }
 
@@ -724,6 +728,211 @@
             border: 1px solid var(--border-color);
             margin-bottom: 2rem;
         }
+
+        /* Add these styles after the existing styles */
+        .avatar-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .current-avatar {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .current-avatar h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .avatar-grid {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .avatar-grid h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .avatar-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .avatar-item {
+            background: var(--bg-tertiary);
+            padding: 1rem 0.75rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            padding-top: 2.5rem;
+        }
+
+        .avatar-item .character {
+            font-size: 4rem;
+            margin: 0;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .avatar-item .avatar-title {
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.2;
+            padding: 0 0.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .avatar-item .avatar-level {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            display: inline-block;
+            margin: 0;
+            position: absolute;
+            top: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .avatar-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .avatar-item:hover::before {
+            opacity: 1;
+        }
+
+        .avatar-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .avatar-item.selected {
+            border: 2px solid var(--primary-color);
+            box-shadow: var(--shadow-orange);
+            background: linear-gradient(145deg, var(--bg-tertiary), var(--bg-secondary));
+        }
+
+        .avatar-item.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: linear-gradient(145deg, var(--bg-tertiary), var(--bg-secondary));
+        }
+
+        .avatar-item.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .avatar-item .lock-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 0.25rem;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
+            z-index: 1;
+        }
+
+        .character-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--primary-color);
+            box-shadow: var(--shadow-orange);
+        }
+
+        .character-container .character {
+            font-size: 4rem;
+        }
+
+        .avatar-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .avatar-container {
+                grid-template-columns: 1fr;
+            }
+
+            .current-avatar {
+                position: relative;
+                top: 0;
+            }
+
+            .avatar-list {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .avatar-item {
+                min-height: 200px;
+                padding: 1rem 0.75rem;
+            }
+
+            .avatar-item .character {
+                font-size: 3rem;
+            }
+
+            .avatar-item .avatar-title {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -780,6 +989,7 @@
                 <div class="tab active" data-tab="sessions">Sessions</div>
                 <div class="tab" data-tab="analytics">Analytics</div>
                 <div class="tab" data-tab="todo">To-Do List</div>
+                <div class="tab" data-tab="avatar">Avatar</div>
             </div>
             
             <div id="sessionsTab">
@@ -872,6 +1082,24 @@
                     <ul class="todo-list" id="todoList"></ul>
                 </div>
             </div>
+
+            <div id="avatarTab" style="display: none;">
+                <h2 class="history-title">Avatar Customization</h2>
+                <div class="avatar-container">
+                    <div class="current-avatar">
+                        <h3>Current Avatar</h3>
+                        <div class="character-container">
+                            <div class="character" id="selectedCharacter"></div>
+                        </div>
+                        <div class="character-title" id="selectedCharacterTitle"></div>
+                        <div class="character-description" id="selectedCharacterDescription"></div>
+                    </div>
+                    <div class="avatar-grid">
+                        <h3>Available Avatars</h3>
+                        <div class="avatar-list" id="avatarList"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -919,37 +1147,8 @@
                 tier: 'bronze',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 100
-            },
-            {
-                id: 'streak_3',
-                title: '3-Day Streak',
-                description: 'Maintain a 3-day streak',
-                icon: '🔥',
-                tier: 'silver',
-                progress: 0,
-                maxProgress: 3,
-                xpReward: 300
-            },
-            {
-                id: 'streak_7',
-                title: '7-Day Streak',
-                description: 'Maintain a 7-day streak',
-                icon: '🌟',
-                tier: 'gold',
-                progress: 0,
-                maxProgress: 7,
-                xpReward: 700
-            },
-            {
-                id: 'streak_30',
-                title: '30-Day Streak',
-                description: 'Maintain a 30-day streak',
-                icon: '🏆',
-                tier: 'platinum',
-                progress: 0,
-                maxProgress: 30,
-                xpReward: 3000
+                xpReward: 100,
+                show: true
             },
             {
                 id: 'total_10_hours',
@@ -959,7 +1158,19 @@
                 tier: 'bronze',
                 progress: 0,
                 maxProgress: 600,
-                xpReward: 200
+                xpReward: 200,
+                show: true
+            },
+            {
+                id: 'streak_3',
+                title: '3-Day Streak',
+                description: 'Maintain a 3-day streak',
+                icon: '🔥',
+                tier: 'silver',
+                progress: 0,
+                maxProgress: 3,
+                xpReward: 300,
+                show: true
             },
             {
                 id: 'total_50_hours',
@@ -969,7 +1180,21 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 3000,
-                xpReward: 1000
+                xpReward: 1000,
+                show: false,
+                prerequisite: 'total_10_hours'
+            },
+            {
+                id: 'streak_7',
+                title: '7-Day Streak',
+                description: 'Maintain a 7-day streak',
+                icon: '🌟',
+                tier: 'gold',
+                progress: 0,
+                maxProgress: 7,
+                xpReward: 700,
+                show: false,
+                prerequisite: 'streak_3'
             },
             {
                 id: 'total_100_hours',
@@ -979,7 +1204,21 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 6000,
-                xpReward: 2000
+                xpReward: 2000,
+                show: false,
+                prerequisite: 'total_50_hours'
+            },
+            {
+                id: 'streak_30',
+                title: '30-Day Streak',
+                description: 'Maintain a 30-day streak',
+                icon: '🏆',
+                tier: 'platinum',
+                progress: 0,
+                maxProgress: 30,
+                xpReward: 3000,
+                show: false,
+                prerequisite: 'streak_7'
             },
             {
                 id: 'early_bird',
@@ -989,7 +1228,8 @@
                 tier: 'bronze',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 150
+                xpReward: 150,
+                show: true
             },
             {
                 id: 'night_owl',
@@ -999,7 +1239,30 @@
                 tier: 'bronze',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 150
+                xpReward: 150,
+                show: true
+            },
+            {
+                id: 'focused_work',
+                title: 'Focused Work',
+                description: 'Complete 5 sessions of 30+ minutes without breaks',
+                icon: '🎯',
+                tier: 'bronze',
+                progress: 0,
+                maxProgress: 5,
+                xpReward: 300,
+                show: true
+            },
+            {
+                id: 'task_completer',
+                title: 'Task Completer',
+                description: 'Complete 10 tasks during sessions',
+                icon: '✅',
+                tier: 'bronze',
+                progress: 0,
+                maxProgress: 10,
+                xpReward: 200,
+                show: true
             },
             {
                 id: 'marathon',
@@ -1009,7 +1272,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 500
+                xpReward: 500,
+                show: false,
+                prerequisite: 'total_10_hours'
             },
             {
                 id: 'multitasker',
@@ -1019,7 +1284,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 5,
-                xpReward: 400
+                xpReward: 400,
+                show: false,
+                prerequisite: 'focused_work'
             },
             {
                 id: 'weekend_warrior',
@@ -1029,7 +1296,8 @@
                 tier: 'bronze',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 200
+                xpReward: 200,
+                show: true
             },
             {
                 id: 'morning_person',
@@ -1039,7 +1307,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 10,
-                xpReward: 500
+                xpReward: 500,
+                show: false,
+                prerequisite: 'early_bird'
             },
             {
                 id: 'afternoon_delight',
@@ -1049,7 +1319,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 10,
-                xpReward: 500
+                xpReward: 500,
+                show: false,
+                prerequisite: 'focused_work'
             },
             {
                 id: 'evening_explorer',
@@ -1059,7 +1331,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 10,
-                xpReward: 500
+                xpReward: 500,
+                show: false,
+                prerequisite: 'night_owl'
             },
             {
                 id: 'activity_master',
@@ -1069,7 +1343,9 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 10,
-                xpReward: 1000
+                xpReward: 1000,
+                show: false,
+                prerequisite: 'multitasker'
             },
             {
                 id: 'consistency_king',
@@ -1079,7 +1355,9 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 21,
-                xpReward: 1500
+                xpReward: 1500,
+                show: false,
+                prerequisite: 'streak_7'
             },
             {
                 id: 'weekday_warrior',
@@ -1089,7 +1367,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 5,
-                xpReward: 600
+                xpReward: 600,
+                show: false,
+                prerequisite: 'weekend_warrior'
             },
             {
                 id: 'balanced_life',
@@ -1099,17 +1379,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 400
-            },
-            {
-                id: 'quick_starter',
-                title: 'Quick Starter',
-                description: 'Complete 5 sessions under 15 minutes',
-                icon: '⚡',
-                tier: 'bronze',
-                progress: 0,
-                maxProgress: 5,
-                xpReward: 300
+                xpReward: 400,
+                show: false,
+                prerequisite: 'weekend_warrior'
             },
             {
                 id: 'endurance_master',
@@ -1119,7 +1391,9 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 5,
-                xpReward: 1200
+                xpReward: 1200,
+                show: false,
+                prerequisite: 'marathon'
             },
             {
                 id: 'activity_architect',
@@ -1129,7 +1403,9 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 20,
-                xpReward: 1500
+                xpReward: 1500,
+                show: false,
+                prerequisite: 'activity_master'
             },
             {
                 id: 'task_master',
@@ -1139,7 +1415,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 50,
-                xpReward: 800
+                xpReward: 800,
+                show: false,
+                prerequisite: 'task_completer'
             },
             {
                 id: 'productivity_ninja',
@@ -1149,7 +1427,9 @@
                 tier: 'silver',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 600
+                xpReward: 600,
+                show: false,
+                prerequisite: 'multitasker'
             },
             {
                 id: 'time_traveler',
@@ -1159,7 +1439,9 @@
                 tier: 'gold',
                 progress: 0,
                 maxProgress: 1,
-                xpReward: 1000
+                xpReward: 1000,
+                show: false,
+                prerequisite: 'morning_person'
             }
         ];
 
@@ -1233,35 +1515,171 @@
                 idleAnimation: "character-idle"
             },
             {
+                level: 2,
+                title: "Curious Explorer",
+                description: "Taking first steps",
+                idle: "🧒",
+                active: "🧒",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 3,
+                title: "Apprentice Learner",
+                description: "Growing in knowledge",
+                idle: "🧑‍🎓",
+                active: "🧑‍🎓",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 4,
+                title: "Skillful Student",
+                description: "Mastering the basics",
+                idle: "🧑‍💻",
+                active: "🧑‍💻",
+                idleAnimation: "character-idle"
+            },
+            {
                 level: 5,
-                title: "Apprentice Explorer",
-                description: "Learning the ropes",
-                idle: "🧙‍♂️",
-                active: "🧙‍♂️",
+                title: "Dedicated Scholar",
+                description: "Building expertise",
+                idle: "📚",
+                active: "📚",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 6,
+                title: "Knowledge Seeker",
+                description: "Expanding horizons",
+                idle: "🔍",
+                active: "🔍",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 7,
+                title: "Wisdom Keeper",
+                description: "Gaining insight",
+                idle: "🧙‍♀️",
+                active: "🧙‍♀️",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 8,
+                title: "Master of Arts",
+                description: "Creative expression",
+                idle: "🎨",
+                active: "🎨",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 9,
+                title: "Strategic Thinker",
+                description: "Planning ahead",
+                idle: "🧠",
+                active: "🧠",
                 idleAnimation: "character-idle"
             },
             {
                 level: 10,
                 title: "Seasoned Warrior",
-                description: "Battle-hardened and ready",
+                description: "Battle-hardened",
                 idle: "⚔️",
                 active: "⚔️",
                 idleAnimation: "character-idle"
             },
             {
+                level: 11,
+                title: "Mystic Sage",
+                description: "Ancient wisdom",
+                idle: "🧙",
+                active: "🧙",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 12,
+                title: "Time Guardian",
+                description: "Master of moments",
+                idle: "⏳",
+                active: "⏳",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 13,
+                title: "Cosmic Explorer",
+                description: "Reaching for stars",
+                idle: "🚀",
+                active: "🚀",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 14,
+                title: "Elemental Master",
+                description: "Harnessing power",
+                idle: "🌪️",
+                active: "🌪️",
+                idleAnimation: "character-idle"
+            },
+            {
                 level: 15,
-                title: "Master Adventurer",
-                description: "A legend in the making",
-                idle: "🏰",
-                active: "🏰",
+                title: "Dragon Rider",
+                description: "Soaring high",
+                idle: "🐉",
+                active: "🐉",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 16,
+                title: "Celestial Being",
+                description: "Transcendent power",
+                idle: "✨",
+                active: "✨",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 17,
+                title: "Ancient Guardian",
+                description: "Timeless wisdom",
+                idle: "🏛️",
+                active: "🏛️",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 18,
+                title: "Mythical Hero",
+                description: "Legendary status",
+                idle: "🦸",
+                active: "🦸",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 19,
+                title: "Eternal Sage",
+                description: "Infinite knowledge",
+                idle: "🧘",
+                active: "🧘",
                 idleAnimation: "character-idle"
             },
             {
                 level: 20,
                 title: "Dungeon Master",
-                description: "Ruler of the realm",
+                description: "Ruler of realms",
                 idle: "👑",
                 active: "👑",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 21,
+                title: "Cosmic Guardian",
+                description: "Universal power",
+                idle: "🌌",
+                active: "🌌",
+                idleAnimation: "character-idle"
+            },
+            {
+                level: 22,
+                title: "Time Lord",
+                description: "Master of all time",
+                idle: "⏰",
+                active: "⏰",
                 idleAnimation: "character-idle"
             }
         ];
@@ -2014,26 +2432,38 @@
                 totalXpElement.textContent = currentXp;
             }
 
+            // Update achievement visibility based on prerequisites
+            achievements.forEach(achievement => {
+                if (achievement.prerequisite) {
+                    const prerequisite = achievements.find(a => a.id === achievement.prerequisite);
+                    if (prerequisite && prerequisite.progress >= prerequisite.maxProgress) {
+                        achievement.show = true;
+                    }
+                }
+            });
+
             if (achievementsCountElement) {
                 achievementsCountElement.textContent = achievements.filter(a => a.progress >= a.maxProgress).length;
             }
 
             const achievementGrid = document.getElementById('achievementGrid');
             if (achievementGrid) {
-                achievementGrid.innerHTML = achievements.map(achievement => `
-                    <div class="achievement-card">
-                        <div class="achievement-icon achievement-${achievement.tier}">
-                            ${achievement.icon}
-                        </div>
-                        <div class="achievement-info">
-                            <div class="achievement-title">${achievement.title}</div>
-                            <div class="achievement-desc">${achievement.description}</div>
-                            <div class="achievement-progress">
-                                <div class="achievement-progress-bar" style="width: ${(achievement.progress / achievement.maxProgress) * 100}%"></div>
+                achievementGrid.innerHTML = achievements
+                    .filter(achievement => achievement.show)
+                    .map(achievement => `
+                        <div class="achievement-card">
+                            <div class="achievement-icon achievement-${achievement.tier}">
+                                ${achievement.icon}
+                            </div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">${achievement.title}</div>
+                                <div class="achievement-desc">${achievement.description}</div>
+                                <div class="achievement-progress">
+                                    <div class="achievement-progress-bar" style="width: ${(achievement.progress / achievement.maxProgress) * 100}%"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
             }
         }
 
@@ -2303,6 +2733,92 @@
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         loadGamificationData();
+
+        // Add these variables after other const declarations
+        const avatarTab = document.getElementById('avatarTab');
+        const selectedCharacter = document.getElementById('selectedCharacter');
+        const selectedCharacterTitle = document.getElementById('selectedCharacterTitle');
+        const selectedCharacterDescription = document.getElementById('selectedCharacterDescription');
+        const avatarList = document.getElementById('avatarList');
+
+        // Add this function after other functions
+        function updateAvatarSelection() {
+            const currentState = characterStates.find(state => state.level <= currentLevel);
+            if (currentState) {
+                selectedCharacter.textContent = currentState.idle;
+                selectedCharacterTitle.textContent = currentState.title;
+                selectedCharacterDescription.textContent = currentState.description;
+            }
+
+            // Update avatar list
+            avatarList.innerHTML = characterStates.map(state => {
+                const isUnlocked = currentLevel >= state.level;
+                const isSelected = currentState && state.level === currentState.level;
+                
+                return `
+                    <div class="avatar-item ${isUnlocked ? '' : 'locked'} ${isSelected ? 'selected' : ''}" 
+                         data-level="${state.level}" ${isUnlocked ? 'onclick="selectAvatar(this)"' : ''}>
+                        ${!isUnlocked ? '<span class="lock-icon">🔒</span>' : ''}
+                        <div class="character">${state.idle}</div>
+                        <div class="avatar-title">${state.title}</div>
+                        <div class="avatar-level">Level ${state.level}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectAvatar(element) {
+            const level = parseInt(element.dataset.level);
+            const state = characterStates.find(s => s.level === level);
+            
+            if (state) {
+                selectedCharacter.textContent = state.idle;
+                selectedCharacterTitle.textContent = state.title;
+                selectedCharacterDescription.textContent = state.description;
+                
+                // Update selected state in the list
+                document.querySelectorAll('.avatar-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                element.classList.add('selected');
+            }
+        }
+
+        // Update the tab switching code to include the avatar tab
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                sessionsTab.style.display = 'none';
+                analyticsTab.style.display = 'none';
+                todoTab.style.display = 'none';
+                avatarTab.style.display = 'none';
+                
+                if (tab.dataset.tab === 'sessions') {
+                    sessionsTab.style.display = 'block';
+                } else if (tab.dataset.tab === 'analytics') {
+                    analyticsTab.style.display = 'block';
+                } else if (tab.dataset.tab === 'todo') {
+                    todoTab.style.display = 'block';
+                } else if (tab.dataset.tab === 'avatar') {
+                    avatarTab.style.display = 'block';
+                    updateAvatarSelection();
+                }
+            });
+        });
+
+        // Update the Initialize section to include avatar initialization
+        loadTotalTime();
+        updateSessionList();
+        updateAnalytics();
+        updateTodoList();
+        updateTagFilterOptions();
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        loadGamificationData();
+        updateAvatarSelection();
     </script>
 </body>
 </html> 
