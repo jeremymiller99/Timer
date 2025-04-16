@@ -3215,6 +3215,27 @@
                 firstSessionAchievement.progress = 1;
             }
 
+            // Task completer achievement
+            const taskCompleter = achievements.find(a => a.id === 'task_completer');
+            let totalCompletedTasks = 0;
+            sessions.forEach(session => {
+                if (session.completedTasks) {
+                    totalCompletedTasks += session.completedTasks.length;
+                }
+            });
+            if (taskCompleter) taskCompleter.progress = Math.min(totalCompletedTasks, 10);
+
+            // Focused work achievement
+            const focusedWork = achievements.find(a => a.id === 'focused_work');
+            let focusedSessions = 0;
+            sessions.forEach(session => {
+                const duration = session.hours * 60 + session.minutes;
+                if (duration >= 30) {
+                    focusedSessions++;
+                }
+            });
+            if (focusedWork) focusedWork.progress = Math.min(focusedSessions, 5);
+
             // Streak achievements
             const streak3Achievement = achievements.find(a => a.id === 'streak_3');
             const streak7Achievement = achievements.find(a => a.id === 'streak_7');
