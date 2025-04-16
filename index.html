@@ -74,6 +74,8 @@
             max-width: 600px;
             border: 1px solid var(--border-color);
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .timer-display {
@@ -83,6 +85,8 @@
             color: var(--primary-color);
             letter-spacing: -0.025em;
             text-shadow: 0 2px 4px rgba(249, 115, 22, 0.2);
+            user-select: none;
+            pointer-events: none;
         }
 
         .total-display {
@@ -941,10 +945,369 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Add these styles after the existing styles */
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(249, 115, 22, 0.2);
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .project-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        /* Add these styles after the existing styles */
+        .achievements-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .achievements-header .history-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .toggle-button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+
+        .toggle-button.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .achievement-grid {
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .achievement-grid.collapsed {
+            max-height: 0;
+        }
+
+        .progression-path {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 1000px;
+            border: 1px solid var(--border-color);
+            margin: 0 auto;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .path-scroll-container {
+            overflow-x: auto;
+            padding: 1rem 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--bg-tertiary);
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 200px; /* Fixed height to contain the path */
+            scroll-behavior: smooth;
+        }
+
+        .path-container {
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+            position: relative;
+            transform: scale(0.83);
+            transform-origin: center;
+            margin: 0 auto;
+            width: calc(100px * 100);
+            justify-content: space-between;
+            height: 100%; /* Ensure it fills the container */
+        }
+
+        .path-line {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--primary-color) 0%,
+                var(--primary-light) 50%,
+                var(--primary-color) 100%
+            );
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+            transform: translateY(-50%);
+        }
+
+        .path-node {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .path-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .path-node.completed {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+        }
+
+        .path-node.completed:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-light);
+        }
+
+        .path-node.current {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            transform: scale(1.2);
+            box-shadow: var(--shadow-orange);
+            animation: pulse 2s infinite;
+        }
+
+        .path-node.current:hover {
+            transform: scale(1.3);
+        }
+
+        .path-node.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .path-node.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .path-node .node-avatar {
+            font-size: 2.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .path-node:hover .node-avatar {
+            transform: scale(1.1);
+        }
+
+        .path-node .node-level {
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .path-node:hover .node-level {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-light);
+        }
+
+        .path-node.current .node-level {
+            color: var(--primary-color);
+            font-weight: 600;
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+        }
+
+        .path-node .node-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            z-index: 3;
+        }
+
+        .path-node:hover .node-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .path-node .node-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--bg-secondary);
+        }
+
+        .path-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .path-nav-button {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .path-nav-button:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-light);
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(249, 115, 22, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+            }
+        }
+
+        /* Add these styles after the existing styles */
+        .achievements-container {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 1000px;
+            border: 1px solid var(--border-color);
+            margin: 2rem auto;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .achievement-grid.collapsed {
+            max-height: 0;
+        }
+
+        @media (max-width: 768px) {
+            .achievement-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Add these styles after the existing styles */
+        .heatmap-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+        }
+
+        .heatmap-pagination button {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .heatmap-pagination button:hover:not(:disabled) {
+            background: var(--primary-color);
+            border-color: var(--primary-light);
+            color: white;
+        }
+
+        .heatmap-pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .heatmap-pagination span {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Update the window object with the new function */
+        window.changeHeatmapPage = changeHeatmapPage;
     </style>
 </head>
 <body>
     <div class="container">
+        <h1 class="project-title">
+            <img src="assets/tudu.png" alt="Tudu Logo" class="project-logo">
+            Tudu Time Tracker
+        </h1>
         <div class="gamification-container">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -975,9 +1338,18 @@
                     <div class="stat-label">Achievements</div>
                 </div>
             </div>
-            <div class="achievements-container">
-                <h2 class="history-title">Achievements</h2>
-                <div class="achievement-grid" id="achievementGrid"></div>
+
+            <div class="progression-path">
+                <h2 class="history-title">Progression Path</h2>
+                <div class="path-scroll-container">
+                    <div class="path-container" id="pathContainer">
+                        <div class="path-line"></div>
+                    </div>
+                </div>
+                <div class="path-navigation">
+                    <button class="path-nav-button" onclick="scrollPath('left')">←</button>
+                    <button class="path-nav-button" onclick="scrollPath('right')">→</button>
+                </div>
             </div>
         </div>
 
@@ -1109,9 +1481,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="achievements-container">
+            <div class="achievements-header">
+                <h2 class="history-title">Achievements</h2>
+                <button class="toggle-button" id="toggleAchievements">▼</button>
+            </div>
+            <div class="achievement-grid" id="achievementGrid"></div>
+        </div>
     </div>
 
     <script>
+        // Add this at the beginning of the script section
+        window.changeHeatmapPage = changeHeatmapPage;
+
         let timer;
         let hours = 0;
         let minutes = 0;
@@ -1120,12 +1503,17 @@
         let totalSeconds = 0;
         let currentSessionStart = null;
         let currentTag = '';
+        let animationFrameId = null;
+        let lastUpdateTime = null;
 
         // Chart instances
         let activityChart = null;
         let dailyDistributionChart = null;
         let trendChart = null;
         let durationChart = null;
+
+        // Days array for day of week calculations
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         const display = document.getElementById('display');
         const totalDisplay = document.getElementById('totalDisplay');
@@ -1450,6 +1838,17 @@
                 xpReward: 1000,
                 show: false,
                 prerequisite: 'morning_person'
+            },
+            {
+                id: 'quick_starter',
+                title: 'Quick Starter',
+                description: 'Complete 5 sessions under 15 minutes',
+                icon: '⚡',
+                tier: 'bronze',
+                progress: 0,
+                maxProgress: 5,
+                xpReward: 200,
+                show: true
             }
         ];
 
@@ -1684,30 +2083,178 @@
             }
         ];
 
-        // Load sessions from localStorage
+        // Add these variables after other const declarations
+        const STORAGE_KEYS = {
+            SESSIONS: 'sessions',
+            TOTAL_TIME: 'totalTime',
+            GAMIFICATION: 'gamification',
+            TODOS: 'todos',
+            SELECTED_AVATAR: 'selectedAvatar'
+        };
+
+        // Add cache object
+        const cache = {
+            sessions: null,
+            totalTime: null,
+            gamification: null,
+            todos: null,
+            selectedAvatar: null,
+            lastUpdated: {}
+        };
+
+        // Add error handling function
+        function handleStorageError(error, operation) {
+            console.error(`Storage error during ${operation}:`, error);
+        }
+
+        // Add validation function
+        function validateData(data, type) {
+            try {
+                switch (type) {
+                    case 'sessions':
+                        return Array.isArray(data) && data.every(session => 
+                            session && typeof session === 'object' &&
+                            'tag' in session && 'start' in session &&
+                            'hours' in session && 'minutes' in session && 'seconds' in session
+                        );
+                    case 'todos':
+                        return Array.isArray(data) && data.every(todo => 
+                            todo && typeof todo === 'object' &&
+                            'text' in todo && typeof todo.text === 'string' &&
+                            'completed' in todo && typeof todo.completed === 'boolean'
+                        );
+                    case 'gamification':
+                        return data && typeof data === 'object' &&
+                            'level' in data && 'xp' in data &&
+                            'streak' in data && 'achievements' in data;
+                    default:
+                        return true;
+                }
+            } catch (error) {
+                console.error('Validation error:', error);
+                return false;
+            }
+        }
+
+        // Update storage functions
+        function loadFromStorage(key) {
+            try {
+                if (cache[key] && Date.now() - cache.lastUpdated[key] < 5000) {
+                    return cache[key];
+                }
+
+                const data = localStorage.getItem(key);
+                if (!data) return null;
+
+                const parsedData = JSON.parse(data);
+                if (validateData(parsedData, key)) {
+                    cache[key] = parsedData;
+                    cache.lastUpdated[key] = Date.now();
+                    return parsedData;
+                }
+                return null;
+            } catch (error) {
+                handleStorageError(error, `loading ${key}`);
+                return null;
+            }
+        }
+
+        function saveToStorage(key, data) {
+            try {
+                if (!validateData(data, key)) {
+                    throw new Error('Invalid data format');
+                }
+
+                localStorage.setItem(key, JSON.stringify(data));
+                cache[key] = data;
+                cache.lastUpdated[key] = Date.now();
+            } catch (error) {
+                handleStorageError(error, `saving ${key}`);
+            }
+        }
+
+        // Update existing functions to use new storage methods
         function loadSessions() {
-            const savedSessions = localStorage.getItem('sessions');
-            return savedSessions ? JSON.parse(savedSessions) : [];
+            return loadFromStorage(STORAGE_KEYS.SESSIONS) || [];
         }
 
-        // Save sessions to localStorage
         function saveSessions(sessions) {
-            localStorage.setItem('sessions', JSON.stringify(sessions));
+            saveToStorage(STORAGE_KEYS.SESSIONS, sessions);
         }
 
-        // Load total time from localStorage
         function loadTotalTime() {
-            const savedTotal = localStorage.getItem('totalTime');
+            const savedTotal = loadFromStorage(STORAGE_KEYS.TOTAL_TIME);
             if (savedTotal) {
                 totalSeconds = parseInt(savedTotal);
                 updateTotalDisplay();
             }
         }
 
-        // Save total time to localStorage
         function saveTotalTime() {
-            localStorage.setItem('totalTime', totalSeconds.toString());
+            saveToStorage(STORAGE_KEYS.TOTAL_TIME, totalSeconds.toString());
         }
+
+        function loadGamificationData() {
+            const data = loadFromStorage(STORAGE_KEYS.GAMIFICATION);
+            if (data) {
+                currentLevel = data.level || 1;
+                currentXp = data.xp || 0;
+                currentStreak = data.streak || 0;
+                lastActivityDate = data.lastActivityDate ? new Date(data.lastActivityDate) : null;
+                achievements.forEach(achievement => {
+                    const savedAchievement = data.achievements?.find(a => a.id === achievement.id);
+                    if (savedAchievement) {
+                        achievement.progress = savedAchievement.progress;
+                    }
+                });
+            }
+            updateGamificationUI();
+        }
+
+        function saveGamificationData() {
+            const data = {
+                level: currentLevel,
+                xp: currentXp,
+                streak: currentStreak,
+                lastActivityDate: lastActivityDate,
+                achievements: achievements
+            };
+            saveToStorage(STORAGE_KEYS.GAMIFICATION, data);
+        }
+
+        function loadTodos() {
+            return loadFromStorage(STORAGE_KEYS.TODOS) || [];
+        }
+
+        function saveTodos(todos) {
+            saveToStorage(STORAGE_KEYS.TODOS, todos);
+        }
+
+        // Add storage event listener for synchronization
+        window.addEventListener('storage', (event) => {
+            if (event.key && STORAGE_KEYS[event.key]) {
+                // Clear cache for the changed key
+                cache[event.key] = null;
+                cache.lastUpdated[event.key] = 0;
+                
+                // Update UI based on the changed data
+                switch (event.key) {
+                    case STORAGE_KEYS.SESSIONS:
+                        updateSessionList();
+                        updateAnalytics();
+                        break;
+                    case STORAGE_KEYS.TOTAL_TIME:
+                        loadTotalTime();
+                        break;
+                    case STORAGE_KEYS.GAMIFICATION:
+                        loadGamificationData();
+                        break;
+                    case STORAGE_KEYS.TODOS:
+                        updateTodoList();
+                        break;
+                }
+            }
+        });
 
         function formatTime(h, m, s) {
             return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
@@ -1784,7 +2331,7 @@
 
                 // Daily distribution
                 const date = new Date(session.start);
-                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dayOfWeek = days[date.getUTCDay()];
                 if (!dailyData[dayOfWeek]) {
                     dailyData[dayOfWeek] = 0;
                 }
@@ -1810,15 +2357,16 @@
                 else if (minutes <= 120) durationData['1-2h']++;
                 else durationData['2h+']++;
 
-                // Best day calculation
-                const dayStr = date.toISOString().split('T')[0];
+                // Best day calculation using UTC dates
+                const utcDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+                const dayStr = utcDate.toISOString().split('T')[0];
                 if (!bestDay.date || duration > bestDay.duration) {
                     bestDay = { date: dayStr, duration };
                 }
 
-                // Streak calculation
-                const sessionDate = new Date(date);
-                sessionDate.setHours(0, 0, 0, 0);
+                // Streak calculation using UTC dates
+                const sessionDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+                sessionDate.setUTCHours(0, 0, 0, 0);
                 
                 if (!lastDate) {
                     currentStreak = 1;
@@ -1860,29 +2408,13 @@
             updateHeatmap();
         }
 
-        function updateActivityChart(tagData) {
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            if (activityChart) {
-                activityChart.destroy();
-            }
-
-            const labels = Object.keys(tagData);
-            const data = labels.map(tag => tagData[tag] / 3600); // Convert to hours
-
-            activityChart = new Chart(ctx, {
+        // Add these variables after other const declarations
+        const chartConfigs = {
+            activityChart: {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Hours Spent',
-                        data: data,
-                        backgroundColor: 'rgba(249, 115, 22, 0.5)',
-                        borderColor: 'rgba(249, 115, 22, 1)',
-                        borderWidth: 1
-                    }]
-                },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -1893,14 +2425,105 @@
                         }
                     }
                 }
+            },
+            dailyDistributionChart: {
+                type: 'line',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} hours`;
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            trendChart: {
+                type: 'line',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    }
+                }
+            },
+            durationChart: {
+                type: 'doughnut',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Add this function after other functions
+        function destroyChart(chart) {
+            if (chart) {
+                chart.destroy();
+            }
+        }
+
+        function updateActivityChart(tagData) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            destroyChart(activityChart);
+
+            const labels = Object.keys(tagData);
+            const data = labels.map(tag => tagData[tag] / 3600); // Convert to hours
+
+            activityChart = new Chart(ctx, {
+                ...chartConfigs.activityChart,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Hours Spent',
+                        data: data,
+                        backgroundColor: 'rgba(249, 115, 22, 0.5)',
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderWidth: 1
+                    }]
+                }
             });
         }
 
         function updateDailyDistributionChart(dailyData) {
             const ctx = document.getElementById('dailyDistributionChart').getContext('2d');
-            if (dailyDistributionChart) {
-                dailyDistributionChart.destroy();
-            }
+            destroyChart(dailyDistributionChart);
 
             const sessions = loadSessions();
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -1917,7 +2540,7 @@
             // Process sessions data
             sessions.forEach(session => {
                 const date = new Date(session.start);
-                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dayOfWeek = days[date.getUTCDay()];
                 const tag = session.tag;
                 const duration = (session.hours * 3600) + (session.minutes * 60) + session.seconds;
                 
@@ -1962,59 +2585,38 @@
             });
 
             dailyDistributionChart = new Chart(ctx, {
-                type: 'line',
+                ...chartConfigs.dailyDistributionChart,
                 data: {
                     labels: days,
                     datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Hours'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'circle'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} hours`;
-                                }
-                            }
-                        }
-                    }
                 }
             });
         }
 
         function updateTrendChart(trendData) {
             const ctx = document.getElementById('trendChart').getContext('2d');
-            if (trendChart) {
-                trendChart.destroy();
+            destroyChart(trendChart);
+
+            // Generate all dates for the last 30 days
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            const allDates = [];
+            const currentDate = new Date(thirtyDaysAgo);
+            while (currentDate <= today) {
+                const dateStr = currentDate.toISOString().split('T')[0];
+                allDates.push(dateStr);
+                currentDate.setDate(currentDate.getDate() + 1);
             }
 
-            const dates = Object.keys(trendData).sort();
-            const data = dates.map(date => trendData[date] / 3600); // Convert to hours
+            // Create data array with 0 for dates without activity
+            const data = allDates.map(date => (trendData[date] || 0) / 3600); // Convert to hours
 
             trendChart = new Chart(ctx, {
-                type: 'line',
+                ...chartConfigs.trendChart,
                 data: {
-                    labels: dates.map(date => new Date(date).toLocaleDateString()),
+                    labels: allDates.map(date => new Date(date).toLocaleDateString()),
                     datasets: [{
                         label: 'Daily Hours',
                         data: data,
@@ -2023,33 +2625,19 @@
                         tension: 0.4,
                         fill: true
                     }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Hours'
-                            }
-                        }
-                    }
                 }
             });
         }
 
         function updateDurationChart(durationData) {
             const ctx = document.getElementById('durationChart').getContext('2d');
-            if (durationChart) {
-                durationChart.destroy();
-            }
+            destroyChart(durationChart);
 
             const labels = Object.keys(durationData);
             const data = Object.values(durationData);
 
             durationChart = new Chart(ctx, {
-                type: 'doughnut',
+                ...chartConfigs.durationChart,
                 data: {
                     labels: labels,
                     datasets: [{
@@ -2064,21 +2652,18 @@
                         borderColor: 'rgba(249, 115, 22, 1)',
                         borderWidth: 1
                     }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
-                    }
                 }
             });
         }
 
-        function updateHeatmap() {
+        // Add these variables after other const declarations
+        const HEATMAP_PAGE_SIZE = 90; // Show 3 months at a time
+        let currentHeatmapPage = 0;
+        let heatmapData = null;
+
+        // Add this function after other functions
+        function initializeHeatmapData() {
             const sessions = loadSessions();
-            const heatmap = document.getElementById('activityHeatmap');
             const today = new Date();
             const oneYearAgo = new Date(today);
             oneYearAgo.setFullYear(today.getFullYear() - 1);
@@ -2087,7 +2672,6 @@
             const dailyActivity = new Map();
             sessions.forEach(session => {
                 const date = new Date(session.start);
-                // Convert to UTC midnight to ensure consistent day boundaries
                 const utcDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
                 const key = utcDate.toISOString().split('T')[0];
                 const duration = session.hours * 3600 + session.minutes * 60 + session.seconds;
@@ -2096,10 +2680,17 @@
 
             // Find the maximum activity for a day
             const maxActivity = Math.max(...dailyActivity.values(), 0);
-            const activityLevels = [0, maxActivity * 0.25, maxActivity * 0.5, maxActivity * 0.75, maxActivity];
+            // Define activity levels based on percentiles
+            const activityLevels = [
+                0,
+                maxActivity * 0.2,  // 20th percentile
+                maxActivity * 0.4,  // 40th percentile
+                maxActivity * 0.6,  // 60th percentile
+                maxActivity * 0.8   // 80th percentile
+            ];
 
-            // Generate the heatmap using UTC dates
-            let heatmapHTML = '';
+            // Pre-calculate all heatmap data
+            const allDates = [];
             let currentDate = new Date(oneYearAgo);
             currentDate.setUTCHours(0, 0, 0, 0);
             
@@ -2109,24 +2700,80 @@
                 
                 // Determine the activity level
                 let level = 0;
-                for (let i = 0; i < activityLevels.length; i++) {
+                for (let i = activityLevels.length - 1; i >= 0; i--) {
                     if (activity >= activityLevels[i]) {
                         level = i;
+                        break;
                     }
                 }
 
-                // Format the date for display in local timezone
-                const localDate = new Date(currentDate);
-                const displayDate = localDate.toLocaleDateString();
-                const hours = Math.round(activity / 3600 * 100) / 100;
-
-                heatmapHTML += `<div class="heatmap-day" style="background-color: var(--heatmap-${level})" 
-                    title="${displayDate}: ${hours} hours"></div>`;
+                allDates.push({
+                    date: new Date(currentDate),
+                    level: level,
+                    hours: Math.round(activity / 3600 * 100) / 100
+                });
                 
                 currentDate.setUTCDate(currentDate.getUTCDate() + 1);
             }
 
+            return allDates;
+        }
+
+        function updateHeatmap() {
+            if (!heatmapData) {
+                heatmapData = initializeHeatmapData();
+                // Calculate the current page based on today's date
+                const today = new Date();
+                today.setUTCHours(0, 0, 0, 0);
+                const todayIndex = heatmapData.findIndex(item => 
+                    item.date.getTime() === today.getTime()
+                );
+                if (todayIndex !== -1) {
+                    currentHeatmapPage = Math.floor(todayIndex / HEATMAP_PAGE_SIZE);
+                }
+            }
+
+            const heatmap = document.getElementById('activityHeatmap');
+            const startIndex = currentHeatmapPage * HEATMAP_PAGE_SIZE;
+            const endIndex = Math.min(startIndex + HEATMAP_PAGE_SIZE, heatmapData.length);
+            const pageData = heatmapData.slice(startIndex, endIndex);
+
+            let heatmapHTML = '';
+            pageData.forEach(item => {
+                const displayDate = item.date.toLocaleDateString();
+                heatmapHTML += `<div class="heatmap-day" style="background-color: var(--heatmap-${item.level})" 
+                    title="${displayDate}: ${item.hours} hours"></div>`;
+            });
+
             heatmap.innerHTML = heatmapHTML;
+
+            // Update pagination controls
+            const totalPages = Math.ceil(heatmapData.length / HEATMAP_PAGE_SIZE);
+            const paginationControls = document.createElement('div');
+            paginationControls.className = 'heatmap-pagination';
+            paginationControls.innerHTML = `
+                <button onclick="changeHeatmapPage(-1)" ${currentHeatmapPage === 0 ? 'disabled' : ''}>← Previous</button>
+                <span>Page ${currentHeatmapPage + 1} of ${totalPages}</span>
+                <button onclick="changeHeatmapPage(1)" ${currentHeatmapPage === totalPages - 1 ? 'disabled' : ''}>Next →</button>
+            `;
+
+            // Remove existing pagination controls if they exist
+            const existingPagination = document.querySelector('.heatmap-pagination');
+            if (existingPagination) {
+                existingPagination.remove();
+            }
+
+            heatmap.parentNode.appendChild(paginationControls);
+        }
+
+        function changeHeatmapPage(delta) {
+            const totalPages = Math.ceil(heatmapData.length / HEATMAP_PAGE_SIZE);
+            const newPage = currentHeatmapPage + delta;
+            
+            if (newPage >= 0 && newPage < totalPages) {
+                currentHeatmapPage = newPage;
+                updateHeatmap();
+            }
         }
 
         function startTimer() {
@@ -2136,41 +2783,58 @@
                 currentTag = tagInput.value.trim() || 'Untagged';
                 checkDailyChallenges();
                 updateCharacter();
-                timer = setInterval(() => {
-                    seconds++;
-                    totalSeconds++;
-                    const oldLevel = currentLevel;
-                    currentXp += xpPerMinute;
+                
+                lastUpdateTime = Date.now();
+                function updateTimer(timestamp) {
+                    if (!isRunning) return;
                     
-                    // Level up check
-                    if (currentXp >= currentLevel * xpPerLevel) {
-                        currentLevel++;
-                        if (currentLevel > oldLevel) {
-                            playLevelUpAnimation();
+                    const now = Date.now();
+                    const elapsed = now - lastUpdateTime;
+                    
+                    if (elapsed >= 1000) {
+                        seconds++;
+                        totalSeconds++;
+                        const oldLevel = currentLevel;
+                        currentXp += xpPerMinute;
+                        
+                        // Level up check
+                        if (currentXp >= currentLevel * xpPerLevel) {
+                            currentLevel++;
+                            if (currentLevel > oldLevel) {
+                                playLevelUpAnimation();
+                            }
                         }
+                        
+                        if (seconds === 60) {
+                            seconds = 0;
+                            minutes++;
+                        }
+                        if (minutes === 60) {
+                            minutes = 0;
+                            hours++;
+                        }
+                        updateDisplay();
+                        updateTotalDisplay();
+                        saveTotalTime();
+                        saveGamificationData();
+                        updateGamificationUI();
+                        lastUpdateTime = now;
                     }
                     
-                    if (seconds === 60) {
-                        seconds = 0;
-                        minutes++;
-                    }
-                    if (minutes === 60) {
-                        minutes = 0;
-                        hours++;
-                    }
-                    updateDisplay();
-                    updateTotalDisplay();
-                    saveTotalTime();
-                    saveGamificationData();
-                    updateGamificationUI();
-                }, 1000);
+                    animationFrameId = requestAnimationFrame(updateTimer);
+                }
+                
+                animationFrameId = requestAnimationFrame(updateTimer);
             }
         }
 
         function pauseTimer() {
             if (isRunning) {
                 isRunning = false;
-                clearInterval(timer);
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
                 updateCharacter();
             }
         }
@@ -2465,6 +3129,8 @@
                         </div>
                     `).join('');
             }
+
+            updateProgressionPath();
         }
 
         // Add checkDailyChallenges function
@@ -2852,6 +3518,121 @@
         resetBtn.addEventListener('click', resetTimer);
         loadGamificationData();
         updateAvatarSelection();
+
+        // Add this after the updateGamificationUI function
+        function toggleAchievements() {
+            const achievementGrid = document.getElementById('achievementGrid');
+            const toggleButton = document.getElementById('toggleAchievements');
+            
+            achievementGrid.classList.toggle('collapsed');
+            toggleButton.classList.toggle('collapsed');
+        }
+
+        // Add this to the Initialize section
+        document.getElementById('toggleAchievements').addEventListener('click', toggleAchievements);
+
+        // Add this after the updateGamificationUI function
+        function initializeProgressionPath() {
+            const pathContainer = document.getElementById('pathContainer');
+            const currentLevel = parseInt(document.getElementById('levelNumber').textContent);
+            const startLevel = 1;
+            const endLevel = 100;
+            
+            let pathHTML = '<div class="path-line"></div>';
+            
+            for (let level = startLevel; level <= endLevel; level++) {
+                const state = characterStates.find(s => s.level === level) || characterStates[0];
+                const isCompleted = level < currentLevel;
+                const isCurrent = level === currentLevel;
+                const isLocked = level > currentLevel;
+                const isMilestone = level % 5 === 0 || level === currentLevel;
+                
+                pathHTML += `
+                    <div class="path-node ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}"
+                         onclick="handleNodeClick(${level})">
+                        ${isMilestone ? `<div class="node-avatar">${state.idle}</div>` : ''}
+                        <div class="node-level">Level ${level}</div>
+                        <div class="node-tooltip">
+                            <div>${state.title}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">${state.description}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            pathContainer.innerHTML = pathHTML;
+            
+            // Set initial scroll position to center the current level
+            const scrollContainer = document.querySelector('.path-scroll-container');
+            const currentNode = pathContainer.querySelector('.path-node.current');
+            if (currentNode && scrollContainer) {
+                const nodeRect = currentNode.getBoundingClientRect();
+                const containerRect = scrollContainer.getBoundingClientRect();
+                const scrollLeft = nodeRect.left - containerRect.left - (containerRect.width / 2) + (nodeRect.width / 2);
+                scrollContainer.scrollLeft = scrollLeft;
+            }
+        }
+
+        function updateProgressionPath() {
+            const pathContainer = document.getElementById('pathContainer');
+            const currentLevel = parseInt(document.getElementById('levelNumber').textContent);
+            const startLevel = 1;
+            const endLevel = 100;
+            
+            let pathHTML = '<div class="path-line"></div>';
+            
+            for (let level = startLevel; level <= endLevel; level++) {
+                const state = characterStates.find(s => s.level === level) || characterStates[0];
+                const isCompleted = level < currentLevel;
+                const isCurrent = level === currentLevel;
+                const isLocked = level > currentLevel;
+                const isMilestone = level % 5 === 0 || level === currentLevel;
+                
+                pathHTML += `
+                    <div class="path-node ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}"
+                         onclick="handleNodeClick(${level})">
+                        ${isMilestone ? `<div class="node-avatar">${state.idle}</div>` : ''}
+                        <div class="node-level">Level ${level}</div>
+                        <div class="node-tooltip">
+                            <div>${state.title}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">${state.description}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            pathContainer.innerHTML = pathHTML;
+        }
+
+        // Update the Initialize section to use initializeProgressionPath instead of updateProgressionPath
+        loadTotalTime();
+        updateSessionList();
+        updateAnalytics();
+        updateTodoList();
+        updateTagFilterOptions();
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        loadGamificationData();
+        updateAvatarSelection();
+        initializeProgressionPath();
+
+        // Initialize achievement grid as expanded
+        const achievementGrid = document.getElementById('achievementGrid');
+        const toggleButton = document.getElementById('toggleAchievements');
+        if (achievementGrid && toggleButton) {
+            achievementGrid.classList.remove('collapsed');
+            toggleButton.classList.remove('collapsed');
+        }
+
+        function handleNodeClick(level) {
+            const state = characterStates.find(s => s.level === level);
+            if (state && level <= currentLevel) {
+                // Update selected avatar
+                localStorage.setItem('selectedAvatar', level.toString());
+                updateAvatarSelection();
+            }
+        };
     </script>
 </body>
 </html> 
