@@ -1503,7 +1503,7 @@
         let totalSeconds = 0;
         let currentSessionStart = null;
         let currentTag = '';
-        let animationFrameId = null;
+        let timerWorker = null;
         let lastUpdateTime = null;
 
         // Chart instances
@@ -2784,56 +2784,49 @@
                 checkDailyChallenges();
                 updateCharacter();
                 
-                lastUpdateTime = Date.now();
-                function updateTimer(timestamp) {
-                    if (!isRunning) return;
-                    
-                    const now = Date.now();
-                    const elapsed = now - lastUpdateTime;
-                    
-                    if (elapsed >= 1000) {
-                        seconds++;
-                        totalSeconds++;
-                        const oldLevel = currentLevel;
-                        currentXp += xpPerMinute;
-                        
-                        // Level up check
-                        if (currentXp >= currentLevel * xpPerLevel) {
-                            currentLevel++;
-                            if (currentLevel > oldLevel) {
-                                playLevelUpAnimation();
+                // Create and start the Web Worker
+                if (!timerWorker) {
+                    timerWorker = new Worker('timer-worker.js');
+                    timerWorker.onmessage = function(e) {
+                        if (e.data === 'tick') {
+                            seconds++;
+                            totalSeconds++;
+                            const oldLevel = currentLevel;
+                            currentXp += xpPerMinute;
+                            
+                            // Level up check
+                            if (currentXp >= currentLevel * xpPerLevel) {
+                                currentLevel++;
+                                if (currentLevel > oldLevel) {
+                                    playLevelUpAnimation();
+                                }
                             }
+                            
+                            if (seconds === 60) {
+                                seconds = 0;
+                                minutes++;
+                            }
+                            if (minutes === 60) {
+                                minutes = 0;
+                                hours++;
+                            }
+                            updateDisplay();
+                            updateTotalDisplay();
+                            saveTotalTime();
+                            saveGamificationData();
+                            updateGamificationUI();
                         }
-                        
-                        if (seconds === 60) {
-                            seconds = 0;
-                            minutes++;
-                        }
-                        if (minutes === 60) {
-                            minutes = 0;
-                            hours++;
-                        }
-                        updateDisplay();
-                        updateTotalDisplay();
-                        saveTotalTime();
-                        saveGamificationData();
-                        updateGamificationUI();
-                        lastUpdateTime = now;
-                    }
-                    
-                    animationFrameId = requestAnimationFrame(updateTimer);
+                    };
                 }
-                
-                animationFrameId = requestAnimationFrame(updateTimer);
+                timerWorker.postMessage('start');
             }
         }
 
         function pauseTimer() {
             if (isRunning) {
                 isRunning = false;
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                    animationFrameId = null;
+                if (timerWorker) {
+                    timerWorker.postMessage('stop');
                 }
                 updateCharacter();
             }
